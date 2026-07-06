@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TestClassLibrary.Infra/TestClassLibrary.Infra.csproj" />
+  <Project Path="TestClassLibrary.IntegrationTest/TestClassLibrary.IntegrationTest.csproj" />
+  <Project Path="TestClassLibrary.UnitTest/TestClassLibrary.UnitTest.csproj" />
+  <Project Path="TestClassLibrary/TestClassLibrary.csproj" />
+</Solution>
