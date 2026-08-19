@@ -70,6 +70,11 @@ jobs:
           echo "Run Attempt   : ${{ github.run_attempt }}"
           echo "Runner        : ${{ runner.os }}"
           echo "Workspace     : ${{ github.workspace }}"
+          echo "Service path  : ${{ inputs.service-path }}"
+          pwd
+          ls -la
+          ls -la "${{ inputs.service-path }}"
+
       #--------------------------------------------------------------------------    
       # Checkout
       #--------------------------------------------------------------------------
