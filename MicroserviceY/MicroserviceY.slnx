@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MicroY.IntegrationTest/MicroY.IntegrationTest.csproj" />
+  <Project Path="MicroY.UnitTest/MicroY.UnitTest.csproj" />
+  <Project Path="MicroY/MicroY.csproj" />
+</Solution>
