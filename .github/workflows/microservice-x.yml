@@ -1,0 +1,36 @@
+#-------------------------------------------------------------------------------
+# Build & Test for pushes and pull requests on the main branch.
+# (In theory only pull requests should happen on the main branch.)
+# Run all unit tests and integration tests.
+#-------------------------------------------------------------------------------
+name: Microservice X
+
+#-------------------------------------------------------------------------------
+# Triggers
+#-------------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'MicroserviceX/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'MicroserviceX/**'
+      - '.github/workflows/**'
+
+
+#-------------------------------------------------------------------------------
+# Jobs
+#-------------------------------------------------------------------------------
+jobs:  
+  build-test:
+    uses: ./.github/workflows/dotnet-unit-integration-tests-workflow.yml
+    with:
+      service-path: MicroserviceX
+      runs-on: ubuntu-latest
+      dotnet-version: "10.0.x"
+      configuration: "Release"
