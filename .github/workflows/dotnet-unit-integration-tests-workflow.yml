@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # Workflow to run unit and integration tests of a given .NET solution
 #-------------------------------------------------------------------------------
-name: .NET Unit And Integration Tests Template
+name: .NET Unit And Integration Tests Workflow
 
 #-------------------------------------------------------------------------------
 # Permissions on repository
@@ -107,7 +107,7 @@ jobs:
         run: |
           for project in $(find . -type f -name "*.UnitTest.csproj"); do
             echo "Running unit test $project"
-            dotnet test "$project" --configuration ${{ inputs.configuration }} --no-build --logger "trx;LogFileName=unit-tests.trx"
+            dotnet test "$project" --configuration ${{ inputs.configuration }} --no-build --logger "trx;LogFileName=unit-tests.trx" --collect:"XPlat Code Coverage"
           done
       #--------------------------------------------------------------------------
       # Integration Tests 
@@ -119,10 +119,24 @@ jobs:
         run: |
           for project in $(find . -type f -name "*.IntegrationTest.csproj"); do
             echo "Running integration test $project"
-            dotnet test "$project" --configuration ${{ inputs.CONFIGURATION }} --no-build --logger "trx;LogFileName=integration-tests.trx"            
+            dotnet test "$project" --configuration ${{ inputs.CONFIGURATION }} --no-build --logger "trx;LogFileName=integration-tests.trx" --collect:"XPlat Code Coverage"
           done
       #--------------------------------------------------------------------------
-      # Publish test results
+      # Report generator
+      #--------------------------------------------------------------------------
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      # Merge code coverage files
+      - name: Generate coverage report
+        shell: bash
+        run: |
+          reportgenerator \
+            -reports:"${{ inputs.service-path }}/**/TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"${{ inputs.service-path }}/TestResults/CoverageReport" \
+            -reporttypes:"Html;Cobertura"
+
+      #--------------------------------------------------------------------------
+      # Publish test results and reports
       #--------------------------------------------------------------------------
       - name: Publish test results
         if: always()
@@ -131,4 +145,13 @@ jobs:
           name: test-results-${{ inputs.service-path }}
           path: |
             ${{ inputs.service-path }}/**/TestResults/**/*.trx
+          if-no-files-found: warn
+
+      - name: Publish coverage report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-${{ inputs.service-path }}
+          path: |
+            ${{ inputs.service-path }}/TestResults/CoverageReport/
           if-no-files-found: warn
