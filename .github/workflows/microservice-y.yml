@@ -27,7 +27,7 @@ on:
 # Jobs
 #-------------------------------------------------------------------------------
 jobs:  
-  build-test:
+  dotnet-unit-integration:
     uses: ./.github/workflows/dotnet-unit-integration-tests-workflow.yml
     with:
       service-path: MicroserviceY

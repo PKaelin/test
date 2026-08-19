@@ -53,13 +53,6 @@ jobs:
           --health-timeout=5s
           --health-retries=10
 
-    #--------------------------------------------------------------------------
-    # Defaults
-    #--------------------------------------------------------------------------
-    defaults:
-      run:
-        working-directory: ${{ inputs.service-path }}
-
     steps:
       #--------------------------------------------------------------------------  
       # Diagnostics
@@ -95,16 +88,19 @@ jobs:
       # Restore
       #--------------------------------------------------------------------------
       - name: Restore dependencies
+        working-directory: ${{ inputs.service-path }}
         run: dotnet restore
       #--------------------------------------------------------------------------    
       # Build
       #--------------------------------------------------------------------------
       - name: Build
+        working-directory: ${{ inputs.service-path }}  
         run: dotnet build --no-restore --configuration ${{ inputs.configuration }}
       #--------------------------------------------------------------------------
       # Unit Tests
       #--------------------------------------------------------------------------
       - name: Run Unit Tests
+        working-directory: ${{ inputs.service-path }}  
         shell: bash
         run: |
           for project in $(find . -type f -name "*.UnitTest.csproj"); do
@@ -116,6 +112,7 @@ jobs:
       # (Backing services like DB/Telemetry/etc. are setup in the service section)
       #--------------------------------------------------------------------------
       - name: Run Integration Tests
+        working-directory: ${{ inputs.service-path }}  
         shell: bash
         run: |
           for project in $(find . -type f -name "*.IntegrationTest.csproj"); do
